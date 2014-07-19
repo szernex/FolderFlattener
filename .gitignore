@@ -1,0 +1,15 @@
+# IDEA
+.idea/
+*.ipl
+*.iml
+
+# gradle
+.gradle/
+gradle/
+gradlew.bat
+gradlew
+
+# Java
+out/
+build/
+*.class
