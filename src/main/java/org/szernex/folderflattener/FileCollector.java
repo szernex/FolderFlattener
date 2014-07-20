@@ -2,9 +2,7 @@ package org.szernex.folderflattener;
 
 import java.io.File;
 import java.io.FileFilter;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class FileCollector
 {
@@ -37,6 +35,27 @@ public class FileCollector
 		};
 	}
 
+	public Map<File, File> flatten(File rootdir, Set<File> files)
+	{
+		Map<File, File> output = new HashMap<File, File>();
+
+		for (File file : files)
+		{
+			File newfile = new File(rootdir, file.getName());
+			int counter = 0;
+
+			while (output.containsValue(newfile))
+			{
+				counter++;
+				newfile = new File(rootdir, String.format("%s_%d%s", getFileName(file), counter, getFileExtension(file)));
+			}
+
+			output.put(file, newfile);
+		}
+
+		return output;
+	}
+
 	public Set<File> collect(File rootdir)
 	{
 		Set<File> output = new HashSet<File>();
@@ -46,28 +65,10 @@ public class FileCollector
 			output.addAll(Arrays.asList(rootdir.listFiles(this.filefilter)));
 
 			File[] dirs = rootdir.listFiles(this.dirfilter);
-			Set<File> temp = new HashSet<File>();
 
 			for (int i = 0; i < dirs.length; i++)
 			{
-				int counter = 0;
-
-				temp.clear();
-				temp.addAll(collect(dirs[i]));
-
-
-				for (File file : temp)
-				{
-					File newfile = new File(rootdir, file.getName());
-
-					while (output.contains(newfile))
-					{
-						counter++;
-						newfile = new File(rootdir, String.format("%s_%d%s", getFileName(file), counter, getFileExtension(file)));
-					}
-
-					output.add(newfile);
-				}
+				output.addAll(collect(dirs[i]));
 			}
 		}
 
