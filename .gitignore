@@ -12,4 +12,5 @@ gradlew
 # Java
 out/
 build/
+lib/
 *.class
